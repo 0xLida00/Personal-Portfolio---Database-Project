@@ -1,0 +1,27 @@
+# Python Bytecode
+__pycache__
+*.pyc
+
+# macOS system files
+.DS_Store
+
+# pytest cache
+.pytest_cache/
+
+# Python environment and version
+.python-version
+.venv/
+**/.venv*/
+
+# IDEs and editors configuration files
+.vs/
+.vscode/
+
+# Jupyter Notebook checkpoints
+**/.ipynb_checkpoints/
+
+# Database files (SQLite database, etc.)
+instance/db.sqlite3
+
+# Environment variable files
+.env
