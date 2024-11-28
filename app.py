@@ -22,5 +22,28 @@ with app.app_context():
     db.create_all()
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'admin':
+            flash('You do not have permission to access this page.')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/')
+def index():
+    projects = Project.query.all()
+    skills = Skill.query.all()
+    testimonials = Testimonial.query.all()
+    return render_template('index.html', projects=projects, skills=skills, testimonials=testimonials)
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

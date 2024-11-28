@@ -94,6 +94,7 @@ class Skill(db.Model):
     skill_name = db.Column(db.String(100), nullable=False)
     proficiency_level = db.Column(db.String(50))
     category = db.Column(db.String(50))
+    active = db.Column(db.Boolean, default=True)
 
     user = db.relationship('User', back_populates='skills')
 
