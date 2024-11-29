@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     experiences = db.relationship('Experience', back_populates='user')
     testimonials = db.relationship('Testimonial', back_populates='user')
     contact_messages = db.relationship('ContactMessage', back_populates='user')
+    external_users = db.relationship('ExternalUser', back_populates='user')
 
     def __repr__(self):
         """Return a string representation of the user object."""
@@ -51,7 +52,6 @@ class ExternalUser(db.Model):
     __tablename__ = 'external_users'
 
     external_user_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=True)
     first_name = db.Column(db.String(50), nullable=True)
     last_name = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(75), nullable=False, unique=True)
@@ -59,12 +59,14 @@ class ExternalUser(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)  # Link to an authenticated user if needed
 
+    user = db.relationship('User', back_populates='external_users')
     testimonials = db.relationship('Testimonial', back_populates='external_user')
     contact_messages = db.relationship('ContactMessage', back_populates='external_user')
 
     def __repr__(self):
         """Return a string representation of the external user object."""
-        return f"<ExternalUser {self.name}> from {self.platform}, joined at {self.created_at}"
+        full_name = f"{self.first_name} {self.last_name}" if self.first_name and self.last_name else self.first_name or self.last_name
+        return f"<ExternalUser {full_name}> from {self.platform}, joined at {self.created_at}"
 
 
 class Project(db.Model):

@@ -17,15 +17,6 @@
         </div>
         {% if current_user.is_authenticated %}
           <div class="d-flex align-items-center">
-            <!-- Profile Image as a clickable link -->
-            <a href="{{ url_for('profile') }}" class="ml-3 text-white">
-              <!-- Use an image tag with a fallback for a default avatar if the user doesn't have a custom profile image -->
-              <img src="{{ url_for('static', filename='img/' + (current_user.profile_image or 'default-avatar.png')) }}" 
-                  alt="Profile Image" 
-                  class="rounded-circle" 
-                  style="width: 40px; height: 40px; object-fit: cover; border: 2px solid white;">
-            </a>
-
             <!-- Role Badge -->
             <span class="badge badge-secondary ml-3">{{ current_user.role }}</span>
           </div>
@@ -38,6 +29,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('projects') }}">Projects</a></li>
             {% if current_user.is_authenticated %}
               {% if current_user.role == 'admin' %}
               {% endif %}

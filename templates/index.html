@@ -7,4 +7,62 @@
     <p class="lead">Discover my projects, skills, and professional journey. I specialize in turning ideas into impactful digital solutions.</p>
     <a href="#projects" class="btn btn-primary mt-3">Explore My Work</a>
   </section>
+
+  <!-- Featured Projects Section -->
+  <section id="projects" class="projects py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Featured Projects</h2>
+      <div class="row">
+        {% for project in projects[:3] %} <!-- Display only top 3 projects -->
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ project.title }}</h5>
+              <p class="card-text">{{ project.description | truncate(100) }}</p>
+              <p><strong>Technologies:</strong> {{ project.technologies }}</p>
+              <a href="{{ project.link }}" class="btn btn-secondary mt-auto" target="_blank">View Project</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="text-center mt-4">
+        <a href="{{ url_for('projects') }}" class="btn btn-outline-primary">View All Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Summary Section -->
+  <section id="skills" class="skills bg-darker py-3">
+    <div class="container">
+      <h2 class="text-center mb-4">Skills Summary</h2>
+      <div class="row">
+        {% for skill in skills %}
+        <div class="col-md-4 mb-3">
+          <h5>{{ skill.skill_name }}</h5>
+          <p>Proficiency: {{ skill.proficiency_level }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="testimonials py-3">
+    <div class="container">
+      <h2 class="text-center mb-4">Testimonials</h2>
+      <ul class="list-unstyled">
+        {% for testimonial in testimonials %}
+        <li class="mb-4">
+          <blockquote class="blockquote text-center">
+            <p>"{{ testimonial.content }}"</p>
+            <p><strong>- {{ testimonial.author_name }} from {{ testimonial.platform }}</strong></p>
+          </blockquote>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Call to Action (CTA) -->
 {% endblock %}

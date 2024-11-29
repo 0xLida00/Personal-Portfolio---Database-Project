@@ -106,65 +106,18 @@ def logout():
     return redirect(url_for('index'))
 
 
-# --------------- User Profile Routes ---------------
-@app.route('/profile', methods=['GET', 'POST'])
+# --------------- Projects & Manage Projects Routes ---------------
+@app.route('/projects')
+def projects():
+    projects = Project.query.all()
+    return render_template('portfolio/projects.html', projects=projects)
+
+@app.route('/manage_projects')
 @login_required
-def profile():
-    user = current_user
-    if request.method == 'POST':
-        user.username = request.form['username']
-        user.email = request.form['email']
-        user.first_name = request.form['first_name']
-        user.last_name = request.form['last_name']
-        
-        db.session.commit()
-        flash('Profile updated successfully!', 'success')
-        return redirect(url_for('profile'))
-
-    return render_template('auth/profile.html', user=user)
-
-
-@app.route('/change_password', methods=['GET', 'POST'])
-@login_required
-def change_password():
-    user = User.query.get_or_404(current_user.user_id)
-    
-    if request.method == 'POST':
-        current_password = request.form['current_password']
-        new_password = request.form['new_password']
-        confirm_password = request.form['confirm_password']
-        
-        # Check if the current password is correct
-        if not user.check_password(current_password):  # Assuming `check_password()` method exists
-            flash('Current password is incorrect.', 'danger')
-            return redirect(url_for('change_password'))
-
-        # Check if new passwords match
-        if new_password != confirm_password:
-            flash('New passwords do not match.', 'danger')
-            return redirect(url_for('change_password'))
-
-        # Update password
-        user.set_password(new_password)  # Assuming `set_password()` method exists
-        db.session.commit()
-        flash('Password updated successfully!', 'success')
-        return redirect(url_for('profile'))
-
-    return render_template('auth/change_password.html')
-
-
-@app.route('/delete_profile', methods=['POST'])
-@login_required
-def delete_profile():
-    # Assuming current_user is the user to be deleted
-    try:
-        db.session.delete(current_user)
-        db.session.commit()
-        flash('Profile deleted successfully!', 'success')
-        return redirect(url_for('index'))
-    except Exception as e:
-        flash('An error occurred. Profile could not be deleted.', 'danger')
-        return redirect(url_for('profile'))
+@admin_required
+def manage_projects():
+    projects = Project.query.all()
+    return render_template('dashboard/manage_projects.html', projects=projects)
 
 
 if __name__ == "__main__":
