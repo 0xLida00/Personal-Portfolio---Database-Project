@@ -69,7 +69,7 @@ $(document).ready(function () {
         $('#confirmModal').modal('show');
     };
 
-    // Project Management: Edit Project Modal
+    // Edit Project Modal
     $('#editProjectModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var projectId = button.data('project-id');
@@ -87,7 +87,7 @@ $(document).ready(function () {
         modal.find('#editProjectForm').attr('action', '/edit_project/' + projectId);
     });
 
-    // Confirm Delete Project
+    // Delete Project Modal
     window.confirmDeleteProject = function (projectId, projectTitle) {
         $('#deleteConfirmMessage').text(`Are you sure you want to delete the project "${projectTitle}"?`);
         $('#deleteConfirmButton')
@@ -96,6 +96,37 @@ $(document).ready(function () {
                 window.location.href = `/delete_project/${projectId}`;
             });
         $('#confirmDeleteModal').modal('show');
+    };
+
+    // User Management: Edit User Modal
+    $('#editUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var userId = button.data('user-id');
+        var username = button.data('username');
+        var email = button.data('email');
+        var role = button.data('role');
+        var modal = $(this);
+    
+        // Set the values in the modal form fields
+        modal.find('#edit_user_id').val(userId);
+        modal.find('#edit_username').val(username);
+        modal.find('#edit_email').val(email);
+        modal.find('#edit_role').val(role);
+    });
+
+    // User Management: Confirmation Modal for Deactivation/Activation
+    window.confirmToggleStatus = function (user_id, username, isActive) {
+        var action = isActive ? 'deactivate' : 'activate';
+        var confirmMessage = `Are you sure you want to ${action} the user "${username}"?`;
+        $('#confirmMessage').text(confirmMessage);
+    
+        $('#confirmButton')
+            .off('click')
+            .on('click', function () {
+                window.location.href = `/toggle_user_status/${user_id}`;
+            });
+    
+        $('#confirmModal').modal('show');
     };
 
     // Password Validation

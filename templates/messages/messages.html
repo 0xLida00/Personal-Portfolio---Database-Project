@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="messages container mt-5">
+  <h2 class="text-center mb-4"><strong>Contact Messages</strong></h2>
+
+  <!-- Search/Filter Form -->
+  <form method="post" action="{{ url_for('messages') }}" class="mb-4 p-4 border rounded shadow-sm">
+    <div class="row align-items-end">
+      <div class="col-md-2">
+        <label for="year">Year:</label>
+        <input type="number" class="form-control" id="year" name="year" min="2000" max="{{ current_year }}" value="{{ request.form.year }}">
+      </div>
+      <div class="col-md-2">
+        <label for="month">Month:</label>
+        <select class="form-control" id="month" name="month">
+          <option value="">All</option>
+          {% for month in months %}
+            <option value="{{ loop.index }}" {% if request.form.month == loop.index|string %}selected{% endif %}>
+              {{ month }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="day">Day:</label>
+        <input type="number" class="form-control" id="day" name="day" min="1" max="31" value="{{ request.form.day }}">
+      </div>
+      <div class="col-md-2">
+        <label for="platform">Platform:</label>
+        <select class="form-control" id="platform" name="platform">
+          <option value="">All</option>
+          {% for platform in platforms %}
+            <option value="{{ platform }}" {% if request.form.platform == platform %}selected{% endif %}>
+              {{ platform }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="status">Status:</label>
+        <select class="form-control" id="status" name="status">
+          <option value="">All</option>
+          <option value="new" {% if request.form.status == 'new' %}selected{% endif %}>New</option>
+          <option value="read" {% if request.form.status == 'read' %}selected{% endif %}>Read</option>
+          <option value="responded" {% if request.form.status == 'responded' %}selected{% endif %}>Responded</option>
+        </select>
+      </div>
+      <div class="col-md-2 text-center">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Messages Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm text-center">
+      <thead class="thead-light">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Platform</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for message in messages %}
+        <tr>
+          <td class="align-middle">{{ message.name }}</td>
+          <td class="align-middle"><a href="mailto:{{ message.email }}">{{ message.email }}</a></td>
+          <td class="align-middle">{{ message.platform }}</td>
+          <td class="align-middle">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          <td class="align-middle">
+            <!-- Conditional Badge Color Based on Status -->
+            {% if message.status == 'new' %}
+              <span class="badge badge-primary">{{ message.status | capitalize }}</span>
+            {% elif message.status == 'read' %}
+              <span class="badge badge-warning">{{ message.status | capitalize }}</span>
+            {% elif message.status == 'responded' %}
+              <span class="badge badge-success">{{ message.status | capitalize }}</span>
+            {% endif %}
+          </td>
+          <td class="align-middle text-center">
+            <a href="{{ url_for('message_detail', message_id=message.message_id) }}" class="btn btn-info btn-sm">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

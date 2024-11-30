@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="message-detail container mt-5">
+    <h2 class="text-center mb-4">Message from {{ contact_message.name }}</h2>
+    <div class="card shadow-sm p-4">
+      <!-- Message Details -->
+      <p><strong>From:</strong> {{ contact_message.name }}</p>
+      <p><strong>Email:</strong> <a href="mailto:{{ contact_message.email }}">{{ contact_message.email }}</a></p>
+      <p><strong>Platform:</strong> {{ contact_message.platform }}</p>
+      <p><strong>Message:</strong></p>
+      <p class="border p-3 rounded bg-light">{{ contact_message.message }}</p>
+      <p><strong>Received at:</strong> {{ contact_message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+      <p><strong>Status:</strong> <span class="badge badge-{{ 'success' if contact_message.status == 'responded' else 'warning' }}">{{ contact_message.status | capitalize }}</span></p>
+
+      {% if contact_message.response %}
+      <!-- Display Response -->
+      <hr>
+      <h4>Response</h4>
+      <p class="border p-3 rounded bg-light">{{ contact_message.response }}</p>
+      <p><strong>Responded at:</strong> {{ contact_message.response_created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+      {% else %}
+      <!-- Response Form -->
+      <hr>
+      <h4>Send a Response</h4>
+      <form action="{{ url_for('message_detail', message_id=contact_message.message_id) }}" method="post">
+        <div class="form-group">
+          <label for="response">Response:</label>
+          <textarea id="response" name="response" class="form-control" rows="5" placeholder="Write your response here..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Response</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <!-- Back to Messages Button -->
+    <div class="text-center mt-4">
+      <a href="{{ url_for('messages') }}" class="btn btn-secondary">Back to Messages</a>
+    </div>
+  </section>
+{% endblock %}

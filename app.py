@@ -367,6 +367,162 @@ def contact():
     return render_template('messages/contact.html')
 
 
+@app.route('/messages', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def messages():
+    if request.method == 'POST':
+        year = request.form.get('year')
+        month = request.form.get('month')
+        day = request.form.get('day')
+        platform = request.form.get('platform')
+        status = request.form.get('status')
+
+        filters = []
+        if year:
+            filters.append(db.extract('year', ContactMessage.created_at) == int(year))
+        if month:
+            filters.append(db.extract('month', ContactMessage.created_at) == int(month))
+        if day:
+            filters.append(db.extract('day', ContactMessage.created_at) == int(day))
+        if platform:
+            filters.append(ContactMessage.platform == platform)
+        if status:
+            filters.append(ContactMessage.status == status)
+        
+        messages = ContactMessage.query.filter(*filters).order_by(ContactMessage.created_at.desc()).all()
+    else:
+        messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+    
+    current_year = datetime.now().year
+    months = list(calendar.month_name)[1:]  # List of month names from January to December
+    platforms = ContactMessage.query.with_entities(ContactMessage.platform).distinct().all()
+    platforms = [platform[0] for platform in platforms]  # Extract platform names from tuples
+    
+    return render_template('messages/messages.html', messages=messages, current_year=current_year, months=months, platforms=platforms)
+
+
+@app.route('/message/<int:message_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def message_detail(message_id):
+    contact_message = ContactMessage.query.get_or_404(message_id)
+    
+    # Update status to "Read" if it's currently "new"
+    if contact_message.status == "new":
+        contact_message.status = "read"
+        db.session.commit()
+        print(f"Message {message_id} status updated to Read")
+    
+    if request.method == 'POST':
+        response = request.form['response']
+        contact_message.response = response
+        contact_message.response_created_at = datetime.now(timezone.utc)
+        contact_message.status = "responded"
+        db.session.commit()
+        print(f"Message {message_id} status updated to Responded")
+        flash('Response sent successfully.', 'success')
+        return redirect(url_for('messages'))
+    
+    return render_template('messages/message_detail.html', contact_message=contact_message)
+
+
+# --------------- User Management Routes ---------------
+@app.route('/user_management', methods=['GET'])
+@login_required
+@admin_required
+def user_management():
+    query = User.query
+    username_email_filter = request.args.get('username_email')
+    if username_email_filter:
+        query = query.filter(
+            (User.username.ilike(f'%{username_email_filter}%')) | 
+            (User.email.ilike(f'%{username_email_filter}%'))
+        )
+    role_filter = request.args.get('role')
+    if role_filter:
+        query = query.filter(User.role == role_filter)
+    status_filter = request.args.get('status')
+    if status_filter:
+        status_filter_value = True if status_filter == 'active' else False
+        query = query.filter(User.active == status_filter_value)
+    created_at_filter = request.args.get('created_at')
+    if created_at_filter:
+        try:
+            created_at_filter_date = datetime.strptime(created_at_filter, '%Y-%m-%d').date()
+            query = query.filter(cast(User.created_at, Date) >= created_at_filter_date)  # Make sure only the date is considered
+        except ValueError:
+            flash("Invalid date format. Please use YYYY-MM-DD.", "danger")
+            return redirect(url_for('user_management'))
+    users = query.all()
+
+    return render_template('dashboard/user_management.html', users=users)
+
+
+@app.route('/add_user', methods=['POST'])
+@login_required
+@admin_required
+def add_user():
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+    role = request.form['role']
+    user = User(username=username, email=email, password=password, role=role)
+    db.session.add(user)
+    db.session.commit()
+    flash('User added successfully.')
+    return redirect(url_for('user_management'))
+
+
+@app.route('/update_user', methods=['POST'])
+@login_required
+@admin_required
+def update_user():
+    user_id = request.form['user_id']
+    user = User.query.get_or_404(user_id)
+    
+    # Debug log
+    print(f"Updating user {user_id}: {request.form['username']}, {request.form['email']}, {request.form['role']}")
+
+    user.username = request.form['username']
+    user.email = request.form['email']
+    user.role = request.form['role']
+    if request.form['password']:  # Update password only if provided
+        user.password = request.form['password']
+
+    db.session.commit()  # Commit the changes to the DB
+    flash('User updated successfully.')
+    
+    # Debug log
+    print(f"User {user_id} updated successfully")
+
+    return redirect(url_for('user_management'))
+
+
+@app.route('/deactivate_user/<int:user_id>')
+@login_required
+@admin_required
+def deactivate_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.active = False
+    db.session.commit()
+    flash('User deactivated successfully.')
+    return redirect(url_for('user_management'))
+
+
+@app.route('/toggle_user_status/<int:user_id>')
+@login_required
+@admin_required
+def toggle_user_status(user_id):
+    user = User.query.get_or_404(user_id)
+    user.active = not user.active  # Toggle the active status
+    db.session.commit()
+    
+    status = 'activated' if user.active else 'deactivated'
+    flash(f'User "{user.username}" has been {status}.', 'success')
+    return redirect(url_for('user_management'))
+
+
 # --------------- Admin Dashboard Route ---------------
 @app.route('/admin_dashboard')
 @login_required
