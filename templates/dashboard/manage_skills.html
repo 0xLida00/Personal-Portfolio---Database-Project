@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="manage-skills container mt-5">
+  <h2 class="text-center mb-4"><strong>Manage Skills</strong></h2>
+
+  <!-- Add Skill Button -->
+  <div class="text-right mb-3">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal">Add Skill</button>
+  </div>
+
+  <!-- Skills Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Skill Name</th>
+          <th>Proficiency Level</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for skill in skills %}
+        <tr>
+          <td>{{ skill.skill_name }}</td>
+          <td>{{ skill.proficiency_level }}</td>
+          <td>{{ skill.category or 'N/A' }}</td>
+          <td>
+            <!-- If the skill is considered active, display 'Active', otherwise 'Inactive' -->
+            <span class="badge badge-{{ 'success' if skill.active else 'warning' }}">
+              {{ 'Active' if skill.active else 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex justify-content-around">
+              <!-- Edit Button -->
+              <button class="btn btn-warning btn-sm" 
+                      data-toggle="modal" data-target="#editSkillModal" 
+                      data-skill-id="{{ skill.skill_id }}" 
+                      data-skill-name="{{ skill.skill_name }}" 
+                      data-proficiency-level="{{ skill.proficiency_level }}"
+                      data-category="{{ skill.category }}"
+                      data-active="{{ skill.active }}">
+                Edit
+              </button>
+
+              <!-- Delete Button -->
+              <button class="btn btn-danger btn-sm" onclick="confirmDeleteSkill('{{ skill.skill_id }}', '{{ skill.skill_name }}')">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for('add_skill') }}">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="skill_name">Skill Name</label>
+            <input type="text" class="form-control" id="skill_name" name="skill_name" required>
+          </div>
+          <div class="form-group">
+            <label for="proficiency_level">Proficiency Level</label>
+            <input type="text" class="form-control" id="proficiency_level" name="proficiency_level" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category (Optional)</label>
+            <input type="text" class="form-control" id="category" name="category">
+          </div>
+          <div class="form-group">
+            <label for="active">Status</label>
+            <select class="form-control" id="active" name="active">
+              <option value="True">Active</option>
+              <option value="False">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Skill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Skill Modal -->
+<div class="modal fade" id="editSkillModal" tabindex="-1" role="dialog" aria-labelledby="editSkillModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editSkillModalLabel">Edit Skill</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" id="editSkillForm" action="{{ url_for('edit_skill') }}">
+        <div class="modal-body">
+          <input type="hidden" id="edit_skill_id" name="skill_id">
+          <div class="form-group">
+            <label for="edit_skill_name">Skill Name</label>
+            <input type="text" class="form-control" id="edit_skill_name" name="skill_name" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_proficiency_level">Proficiency Level</label>
+            <input type="text" class="form-control" id="edit_proficiency_level" name="proficiency_level" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_category">Category</label>
+            <input type="text" class="form-control" id="edit_category" name="category">
+          </div>
+          <div class="form-group">
+            <label for="edit_active">Status</label>
+            <select class="form-control" id="edit_active" name="active">
+              <option value="True" id="active_true">Active</option>
+              <option value="False" id="active_false">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update Skill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">Are you sure you want to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No, abort action</button>
+        <button type="button" class="btn btn-primary" id="confirmButton">Yes, I am sure</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

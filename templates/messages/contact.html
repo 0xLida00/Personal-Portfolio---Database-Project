@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="contact container mt-5">
+  <h2 class="text-center mb-4"><strong>Contact Me</strong></h2>
+  <div class="row">
+    <!-- Contact Form -->
+    <div class="col-md-6">
+      <form action="{{ url_for('contact') }}" method="post">
+        <div class="form-group mb-3">
+          <label for="name">Name:</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group mb-3">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group mb-3">
+          <label for="message">Message:</label>
+          <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter your message" required></textarea>
+        </div>
+        {% if captcha_enabled %}
+        <div class="form-group mb-3">
+          <label for="captcha">Captcha:</label>
+          <!-- Captcha Image or ReCaptcha -->
+          <input type="text" class="form-control" id="captcha" name="captcha" placeholder="Verify you are human" required>
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary btn-block mt-3">Send</button>
+      </form>
+    </div>
+
+    <!-- External Contact Information -->
+    <div class="col-md-6 text-center">
+      <h3>Other Ways to Connect</h3>
+      <p>If you'd prefer, you can reach me via these platforms:</p>
+      <ul class="list-unstyled">
+        <li>
+          <a href="mailto:rodrigue.betema@gmail.com" class="text-decoration-none btn-link"><i class="fas fa-envelope"></i> Email</a>
+        </li>
+        <li>
+          <a href="https://linkedin.com/in/lidao-p-betema-01617295" target="_blank" class="text-decoration-none btn-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        </li>
+        <li>
+          <a href="https://github.com/0xLida00" target="_blank" class="text-decoration-none btn-link"><i class="fab fa-github"></i> GitHub</a>
+        </li>
+        <li>
+          <a href="https://x.com/LidaoNFT" target="_blank" class="text-decoration-none btn-link"><i class="fab fa-twitter"></i> Twitter</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

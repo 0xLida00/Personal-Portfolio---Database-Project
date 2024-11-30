@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="manage_experiences container mt-5">
+  <h2 class="text-center mb-4"><strong>Professional Experiences</strong></h2>
+
+  <!-- Add Experience Button -->
+  <div class="text-right mb-3">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addExperienceModal">Add Experience</button>
+  </div>
+
+  <!-- Experiences Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Position</th>
+          <th>Company</th>
+          <th>Duration</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for experience in experiences %}
+        <tr>
+          <td class="align-middle">{{ experience.position }}</td>
+          <td class="align-middle">{{ experience.company }}</td>
+          <td class="align-middle">
+            {{ experience.start_date.strftime('%Y-%m') }} to 
+            {{ experience.end_date.strftime('%Y-%m') if experience.end_date else 'Present' }}
+          </td>
+          <td class="align-middle text-wrap" style="max-width: 300px;">{{ experience.description }}</td>
+          <td class="align-middle">
+            <div class="d-flex justify-content-around">
+              <!-- Edit Button -->
+              <button class="btn btn-warning btn-sm" 
+                      data-toggle="modal" data-target="#editExperienceModal" 
+                      data-experience-id="{{ experience.experience_id }}" 
+                      data-position="{{ experience.position }}" 
+                      data-company="{{ experience.company }}" 
+                      data-start-date="{{ experience.start_date.strftime('%Y-%m-%d') }}" 
+                      data-end-date="{{ experience.end_date.strftime('%Y-%m-%d') if experience.end_date else '' }}" 
+                      data-description="{{ experience.description }}">
+                Edit
+              </button>
+
+              <!-- Delete Button -->
+              <button class="btn btn-danger btn-sm" 
+                      data-toggle="modal" 
+                      data-target="#deleteExperienceModal" 
+                      data-experience-id="{{ experience.experience_id }}" 
+                      data-experience-name="{{ experience.position }} at {{ experience.company }}">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Add Experience Modal -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" role="dialog" aria-labelledby="addExperienceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addExperienceModalLabel">Add Experience</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{{ url_for('add_experience') }}">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="position">Position</label>
+            <input type="text" class="form-control" id="position" name="position" required>
+          </div>
+          <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" class="form-control" id="company" name="company" required>
+          </div>
+          <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" required>
+          </div>
+          <div class="form-group">
+            <label for="end_date">End Date (Optional)</label>
+            <input type="date" class="form-control" id="end_date" name="end_date">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Experience</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Experience Modal -->
+<div class="modal fade" id="editExperienceModal" tabindex="-1" role="dialog" aria-labelledby="editExperienceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editExperienceModalLabel">Edit Experience</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" id="editExperienceForm">
+        <div class="modal-body">
+          <input type="hidden" id="edit_experience_id" name="experience_id" >
+          <div class="form-group">
+            <label for="edit_position">Position</label>
+            <input type="text" class="form-control" id="edit_position" name="position" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_company">Company</label>
+            <input type="text" class="form-control" id="edit_company" name="company" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_start_date">Start Date</label>
+            <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+          </div>
+          <div class="form-group">
+            <label for="edit_end_date">End Date (Optional)</label>
+            <input type="date" class="form-control" id="edit_end_date" name="end_date">
+          </div>
+          <div class="form-group">
+            <label for="edit_description">Description</label>
+            <textarea class="form-control" id="edit_description" name="description" rows="4" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update Experience</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="deleteExperienceModal" tabindex="-1" role="dialog" aria-labelledby="deleteExperienceModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteExperienceModalLabel">Confirm Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteConfirmMessage">Are you sure you want to delete this experience?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Cancel</button>
+        <button type="button" class="btn btn-danger" id="deleteConfirmButton">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

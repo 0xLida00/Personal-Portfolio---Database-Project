@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="skills container mt-5">
+  <h2 class="text-center mb-4"><strong>Skills</strong></h2>
+  <p class="text-center">Here is an overview of my professional skills and proficiency levels.</p>
+  <br>
+
+  <div class="row">
+    {% for skill in skills %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ skill.skill_name }}</h5>
+          <p class="card-text">
+            <span class="badge badge-primary">{{ skill.proficiency_level }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
