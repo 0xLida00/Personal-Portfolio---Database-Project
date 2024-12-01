@@ -19,13 +19,6 @@
           <label for="message">Message:</label>
           <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter your message" required></textarea>
         </div>
-        {% if captcha_enabled %}
-        <div class="form-group mb-3">
-          <label for="captcha">Captcha:</label>
-          <!-- Captcha Image or ReCaptcha -->
-          <input type="text" class="form-control" id="captcha" name="captcha" placeholder="Verify you are human" required>
-        </div>
-        {% endif %}
         <button type="submit" class="btn btn-primary btn-block mt-3">Send</button>
       </form>
     </div>

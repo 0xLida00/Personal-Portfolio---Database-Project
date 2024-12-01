@@ -28,7 +28,6 @@
           <td>{{ skill.proficiency_level }}</td>
           <td>{{ skill.category or 'N/A' }}</td>
           <td>
-            <!-- If the skill is considered active, display 'Active', otherwise 'Inactive' -->
             <span class="badge badge-{{ 'success' if skill.active else 'warning' }}">
               {{ 'Active' if skill.active else 'Inactive' }}
             </span>

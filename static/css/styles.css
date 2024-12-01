@@ -51,7 +51,7 @@ html, body {
     color: #fff;
   }
   
-  /* Flash messages container */
+  /* Flash messages container Styles */
   .flash-container {
     position: fixed;
     top: 165px;
@@ -80,7 +80,7 @@ html, body {
     }
   }
   
-  /* Style for each individual flash message */
+  /* Individual flash messages styles */
   .flash-message {
     background-color: #4CAF50;
     color: white;
@@ -91,7 +91,6 @@ html, body {
     text-align: center;
   }
   
-  /* Different flash message categories */
   .flash-message.success {
     background-color: #4CAF50;
   }
@@ -102,13 +101,6 @@ html, body {
   
   .flash-message.info {
     background-color: #2196F3;
-  }
-  
-  /*Alert styling */
-  .alert {
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: center;
   }
   
   /* List styling */

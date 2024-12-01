@@ -7,22 +7,20 @@
   <div class="row">
     {% for experience in experiences %}
     <div class="col-md-4 mb-4">
-      <!-- Experience Card -->
       <div class="card shadow-sm h-100">
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ experience.position }}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{ experience.company }}</h6>
-
-          <!-- Truncated Experience Description -->
           <p class="card-text" id="description_{{ experience.experience_id }}">
             {{ experience.description | truncate(100) }}
-            <span id="show-more-{{ experience.experience_id }}" class="text-primary show-more" style="cursor: pointer;"> Show More</span>
           </p>
-
-          <!-- Full Experience Description (Initially Hidden) -->
-          <p class="full-description" id="full-desc-{{ experience.experience_id }}" style="display: none;">
+          <!-- Truncated Experience Description -->
+          <p class="card-text" id="full_description_{{ experience.experience_id }}" style="display: none;">
             {{ experience.description }}
           </p>
+          <a href="javascript:void(0);" onclick="toggleDescription({{ experience.experience_id }})" class="text-primary" id="more_link_{{ experience.experience_id }}">
+            Show More
+          </a>
 
           <!-- Duration -->
           <p class="card-text">

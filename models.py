@@ -18,7 +18,7 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     role = db.Column(db.String(10), default='visitor', nullable=False)
     active = db.Column(db.Boolean, default=True)  # Active status for user
-    password = db.Column(db.String(128)) # Store plain text password (would not use this approach for production)
+    password = db.Column(db.String(128)) # Store plain text password (I WILL NOT USE this approach in real life but just for this project and academic reasons - we will be learning better approaches in the next module)
 
     projects = db.relationship('Project', back_populates='user')
     skills = db.relationship('Skill', back_populates='user')

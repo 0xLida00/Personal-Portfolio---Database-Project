@@ -107,7 +107,6 @@ $(document).ready(function () {
         var role = button.data('role');
         var modal = $(this);
     
-        // Set the values in the modal form fields
         modal.find('#edit_user_id').val(userId);
         modal.find('#edit_username').val(username);
         modal.find('#edit_email').val(email);

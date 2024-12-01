@@ -73,7 +73,6 @@
           <td class="align-middle">{{ message.platform }}</td>
           <td class="align-middle">{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
           <td class="align-middle">
-            <!-- Conditional Badge Color Based on Status -->
             {% if message.status == 'new' %}
               <span class="badge badge-primary">{{ message.status | capitalize }}</span>
             {% elif message.status == 'read' %}

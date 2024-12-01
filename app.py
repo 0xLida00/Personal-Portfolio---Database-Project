@@ -38,6 +38,7 @@ def admin_required(f):
     return decorated_function
 
 
+# --------------- Home Route ---------------
 @app.route('/')
 def index():
     projects = Project.query.all()
@@ -126,9 +127,8 @@ def add_project():
     title = request.form['title']
     description = request.form['description']
     technologies = request.form['technologies']
-    link = request.form.get('link')  # Get the optional link field
-    user_id = current_user.user_id  # Ensure the user_id is set to the current user's ID
-
+    link = request.form.get('link')
+    user_id = current_user.user_id
     # Create a new project instance with the provided data
     project = Project(user_id=user_id, title=title, description=description, technologies=technologies, link=link)
     db.session.add(project)
@@ -145,12 +145,10 @@ def edit_project(project_id):
     project.title = request.form['title']
     project.description = request.form['description']
     project.technologies = request.form['technologies']
-
     # Only update link if provided (optional)
     link = request.form.get('link')
     if link:
         project.link = link
-
     db.session.commit()
     flash('Project updated successfully.', 'success')
     return redirect(url_for('manage_projects'))
@@ -161,7 +159,6 @@ def edit_project(project_id):
 @admin_required
 def delete_project(project_id):
     project = Project.query.get_or_404(project_id)
-
     try:
         db.session.delete(project)
         db.session.commit()
@@ -170,7 +167,6 @@ def delete_project(project_id):
         db.session.rollback()
         flash(f'Failed to delete project "{project.title}". Please try again.', 'danger')
         print(f"Error deleting project: {e}")
-
     return redirect(url_for('manage_projects'))
 
 
@@ -195,7 +191,7 @@ def add_skill():
     skill_name = request.form['skill_name']
     proficiency_level = request.form['proficiency_level']
     category = request.form.get('category', None)
-    active = request.form['active'] == 'True'  # Convert string to boolean
+    active = request.form['active'] == 'True'
     new_skill = Skill(
         skill_name=skill_name,
         proficiency_level=proficiency_level,
@@ -218,7 +214,7 @@ def edit_skill():
     skill.skill_name = request.form['skill_name']
     skill.proficiency_level = request.form['proficiency_level']
     skill.category = request.form.get('category', None)
-    skill.active = request.form['active'] == 'True'  # Convert string to boolean
+    skill.active = request.form['active'] == 'True'
     
     db.session.commit()
     flash('Skill updated successfully!', 'success')
@@ -258,20 +254,19 @@ def manage_experiences():
 @app.route('/add_experience', methods=['POST'])
 @login_required
 def add_experience():
-    # Retrieve form data
     position = request.form['position']
     company = request.form['company']
     start_date_str = request.form['start_date']
     end_date_str = request.form['end_date'] if request.form['end_date'] else None
     description = request.form['description']
     # Convert the start_date and end_date to date objects
-    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()  # Convert start_date string to date object
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
     end_date = None
     if end_date_str:
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()  # Convert end_date string to date object if provided
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
     # Assuming user_id is already set for the logged-in user
     user_id = current_user.user_id
-    # Create a new experience object
+
     new_experience = Experience(
         user_id=user_id,
         position=position,
@@ -280,7 +275,6 @@ def add_experience():
         end_date=end_date,
         description=description
     )
-    # Add the new experience to the database
     db.session.add(new_experience)
     db.session.commit()
 
@@ -304,7 +298,6 @@ def edit_experience(experience_id):
         experience.end_date = None
 
     experience.description = request.form['description']
-    
     db.session.commit()
     flash('Experience updated successfully!', 'success')
     return redirect(url_for('manage_experiences'))
@@ -316,7 +309,6 @@ def delete_experience(experience_id):
     experience = Experience.query.get_or_404(experience_id)
     db.session.delete(experience)
     db.session.commit()
-
     flash('Experience deleted successfully!', 'success')
     return redirect(url_for('manage_experiences'))
 
@@ -363,7 +355,6 @@ def contact():
             print(f"Error: {e}")
 
         return redirect(url_for('contact'))
-    
     return render_template('messages/contact.html')
 
 
@@ -395,9 +386,9 @@ def messages():
         messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
     
     current_year = datetime.now().year
-    months = list(calendar.month_name)[1:]  # List of month names from January to December
+    months = list(calendar.month_name)[1:]
     platforms = ContactMessage.query.with_entities(ContactMessage.platform).distinct().all()
-    platforms = [platform[0] for platform in platforms]  # Extract platform names from tuples
+    platforms = [platform[0] for platform in platforms]
     
     return render_template('messages/messages.html', messages=messages, current_year=current_year, months=months, platforms=platforms)
 
@@ -407,7 +398,6 @@ def messages():
 @admin_required
 def message_detail(message_id):
     contact_message = ContactMessage.query.get_or_404(message_id)
-    
     # Update status to "Read" if it's currently "new"
     if contact_message.status == "new":
         contact_message.status = "read"
@@ -423,7 +413,6 @@ def message_detail(message_id):
         print(f"Message {message_id} status updated to Responded")
         flash('Response sent successfully.', 'success')
         return redirect(url_for('messages'))
-    
     return render_template('messages/message_detail.html', contact_message=contact_message)
 
 
@@ -450,12 +439,11 @@ def user_management():
     if created_at_filter:
         try:
             created_at_filter_date = datetime.strptime(created_at_filter, '%Y-%m-%d').date()
-            query = query.filter(cast(User.created_at, Date) >= created_at_filter_date)  # Make sure only the date is considered
+            query = query.filter(cast(User.created_at, Date) >= created_at_filter_date)
         except ValueError:
             flash("Invalid date format. Please use YYYY-MM-DD.", "danger")
             return redirect(url_for('user_management'))
     users = query.all()
-
     return render_template('dashboard/user_management.html', users=users)
 
 
@@ -480,7 +468,6 @@ def add_user():
 def update_user():
     user_id = request.form['user_id']
     user = User.query.get_or_404(user_id)
-    
     # Debug log
     print(f"Updating user {user_id}: {request.form['username']}, {request.form['email']}, {request.form['role']}")
 
@@ -490,12 +477,10 @@ def update_user():
     if request.form['password']:  # Update password only if provided
         user.password = request.form['password']
 
-    db.session.commit()  # Commit the changes to the DB
+    db.session.commit()
     flash('User updated successfully.')
-    
     # Debug log
     print(f"User {user_id} updated successfully")
-
     return redirect(url_for('user_management'))
 
 
@@ -515,7 +500,7 @@ def deactivate_user(user_id):
 @admin_required
 def toggle_user_status(user_id):
     user = User.query.get_or_404(user_id)
-    user.active = not user.active  # Toggle the active status
+    user.active = not user.active
     db.session.commit()
     
     status = 'activated' if user.active else 'deactivated'
