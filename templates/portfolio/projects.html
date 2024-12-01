@@ -12,13 +12,14 @@
         <div class="card-body d-flex flex-column">
           <!-- Project Title -->
           <h5 class="card-title text-primary">{{ project.title }}</h5>
-
-          <!-- Project Description -->
-          <p class="card-text">{{ project.description | truncate(100) }}</p>
-
-          <!-- Project Technologies -->
+          <p class="card-text" id="description_{{ project.project_id }}">{{ project.description | truncate(100) }}</p>
+          <p class="card-text" id="full_description_{{ project.project_id }}" style="display:none;">
+            {{ project.description }}
+          </p>
+          <a href="javascript:void(0);" onclick="toggleDescription({{ project.project_id }})" class="text-primary" id="more_link_{{ project.project_id }}">
+            Show More
+          </a>
           <p class="text-muted"><strong>Technologies:</strong> {{ project.technologies }}</p>
-
           <!-- Project Status -->
           <p>
             <strong>Status:</strong>
@@ -26,7 +27,6 @@
               {{ 'Active' if project.link else 'Inactive' }}
             </span>
           </p>
-
           <!-- View Project Button -->
           {% if project.link %}
           <a href="{{ project.link }}" target="_blank" class="btn btn-info mt-auto">View Project</a>

@@ -129,6 +129,21 @@ $(document).ready(function () {
         $('#confirmModal').modal('show');
     };
 
+    // Smooth Scrolling for anchor links
+    $('a[href^="#"]').on('click', function (e) {
+        e.preventDefault();
+        
+        var target = this.hash;
+        var $target = $(target);
+        
+        // Scroll smoothly to the target section
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top
+        }, 900, 'swing', function () {
+            window.location.hash = target;
+        });
+    });
+
     // Password Validation
     const validatePassword = () => {
         const password = document.getElementById('password').value;
@@ -157,3 +172,22 @@ $(document).ready(function () {
         }
     });
 });
+
+  // Toggle function to expand/collapse project description
+  function toggleDescription(projectId) {
+    var description = document.getElementById('full_description_' + projectId);
+    var truncatedDescription = document.getElementById('description_' + projectId);
+    var moreLink = document.getElementById('more_link_' + projectId);
+
+    if (description.style.display === 'none') {
+      // Show full description and hide truncated description
+      description.style.display = 'block';
+      truncatedDescription.style.display = 'none';
+      moreLink.textContent = 'Show Less';  // Change the link text to "Show Less"
+    } else {
+      // Hide full description and show truncated description
+      description.style.display = 'none';
+      truncatedDescription.style.display = 'block';
+      moreLink.textContent = 'Show More';  // Change the link text back to "Show More"
+    }
+  }

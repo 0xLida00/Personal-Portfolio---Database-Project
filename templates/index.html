@@ -18,8 +18,20 @@
           <div class="card h-100">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">{{ project.title }}</h5>
-              <p class="card-text">{{ project.description | truncate(100) }}</p>
+
+              <!-- Project Description (Truncated) -->
+              <p class="card-text" id="description_{{ project.project_id }}">
+                {{ project.description | truncate(100) }}
+                <span id="show-more-{{ project.project_id }}" class="text-primary show-more" style="cursor: pointer;"> Show More</span>
+              </p>
+
+              <!-- Full Description (Initially Hidden) -->
+              <p class="full-description" id="full-desc-{{ project.project_id }}" style="display: none;">
+                {{ project.description }}
+              </p>
+
               <p><strong>Technologies:</strong> {{ project.technologies }}</p>
+
               <a href="{{ project.link }}" class="btn btn-secondary mt-auto" target="_blank">View Project</a>
             </div>
           </div>
