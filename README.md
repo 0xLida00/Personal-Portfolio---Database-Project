@@ -37,6 +37,23 @@ This project is a **Personal Portfolio Website** that showcases your skills, pro
    - The website is designed with accessibility in mind (color contrast, legible fonts).
 
 ---
+**Features:**
+   - User Authentication: Admin can log in and manage their portfolio.
+   - Project Management: Add, edit, and delete projects
+   - Skills & Experience Management: Manage skills and professional experience.
+   - Testimonials: External users can submit testimonials, and admins can respond to them.
+   - Contact Messages: External users can send messages through the contact form.
+   - Message Threads: Admins can respond to messages and maintain a thread for communication.
+
+**Future Enhancements:**
+   - Admin Dashboard: Build an interactive dashboard for easier project management.
+   - Analytics: Add an analytics page to track user engagement or testimonials.
+   - Interactions: Add instant chat widget to interact with users and Partners in real time.
+   - Expand to Public: Allow Users to create and administrate their own portfolio.
+
+**Entity-Relationship Diagram (ERD) and Database Structure:**
+    The entities, relationships, and the corresponding Entity-Relationship Diagram (ERD) for the project are detailed in a separate document. You can view and download the document [here](docs/Personal_Portfolio_Website_with_Project_Management.pdf).
+    This document provides an in-depth overview of the database schema and how the entities relate to each other in the context of the application.
 
 ## Setup Instructions
 
@@ -78,16 +95,10 @@ Make sure you have the following installed:
         flask run
     The application will be available at http://127.0.0.1:8000.
 
-Features :
-	•	User Authentication: Admin can log in and manage their portfolio.
-	•	Project Management: Add, edit, and delete projects.
-	•	Skills & Experience Management: Manage skills and professional experience.
-	•	Testimonials: External users can submit testimonials, and admins can respond to them.
-	•	Contact Messages: External users can send messages through the contact form.
-	•	Message Threads: Admins can respond to messages and maintain a thread for communication.
 
 Structure :
 Directory Layout
+```
 Personal-Portfolio--Database-Project/
     |── app.py
     |── static/
@@ -129,12 +140,3 @@ Personal-Portfolio--Database-Project/
 	•	static: Contains static assets like CSS and JavaScript files.
 	•	app.py: The core Flask application file where the app is initialized and Flask routes are defined to handle requests and responses.
 
-Future Enhancements:
-	•	Admin Dashboard: Build an interactive dashboard for easier project management.
-	•	Analytics: Add an analytics page to track user engagement or testimonials.
-    •	Interactions: Add instant chat widget to interact with users and Partners in real time.
-    •	Expand to Public: Allow Users to create and administrate their own portfolio.
-
-Entity-Relationship Diagram (ERD) and Database Structure
-    The entities, relationships, and the corresponding Entity-Relationship Diagram (ERD) for the project are detailed in a separate document. You can view and download the document [here](docs/Personal_Portfolio_Website_with_Project_Management.pdf).
-    This document provides an in-depth overview of the database schema and how the entities relate to each other in the context of the application.
