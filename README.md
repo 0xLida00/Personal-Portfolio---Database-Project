@@ -108,22 +108,22 @@ Personal-Portfolio--Database-Project/
     |     |    |── scripts.js
     |── templates/
     |     |── auth/
-    |     |     |── login.html
-    |     |     |── register.html
+    |     |    |── login.html
+    |     |    |── register.html
     |     |── dashboard/
-    |     |     |── admin_dashboard.html
-    |     |     |── manage_experiences.html
-    |     |     |── manage_projects.html
-    |     |     |── manage_skills.html
-    |     |     |── user_management.html
+    |     |    |── admin_dashboard.html
+    |     |    |── manage_experiences.html
+    |     |    |── manage_projects.html
+    |     |    |── manage_skills.html
+    |     |    |── user_management.html
     |     |── messages/
-    |     |     |── contact.html
-    |     |     |── message_detail.html
-    |     |     |── messages.html
+    |     |    |── contact.html
+    |     |    |── message_detail.html
+    |     |    |── messages.html
     |     |── portfolio/
-    |     |     |── experiences.html
-    |     |     |── projects.html
-    |     |     |── skills.html
+    |     |    |── experiences.html
+    |     |    |── projects.html
+    |     |    |── skills.html
     |     |── base.html
     |     |── index.html
     |── config.py
