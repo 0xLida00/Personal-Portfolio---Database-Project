@@ -55,10 +55,10 @@ def login():
         password = request.form["password"]
         user = User.query.filter_by(username=username).first()
         if not user:
-            flash(f"No such user '{username}'")
+            flash(f"No such user '{username}'", "danger")
             return redirect(url_for("login"))
         if password != user.password:
-            flash(f"Invalid password for the user '{username}'")
+            flash(f"Invalid password for the user '{username}'", "danger")
             return redirect(url_for("login"))
 
         login_user(user)
